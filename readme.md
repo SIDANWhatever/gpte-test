@@ -73,7 +73,7 @@ GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d626
 LOVELACE_TO_LOCK=
 GIMBALS_TO_LOCK=
 GIMBALS_BACK_TO_ISSUER=
-DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
+DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
 ```
 
 ### Note:
@@ -142,8 +142,8 @@ cardano-cli transaction submit \
 
 ### 5a. First, let's skip using inline datum for the commitment, just to make sure things work.
 ```
-BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
+BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
+TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
 BOUNTY_LOVELACE=
 BOUNTY_GIMBALS=
 LOVELACE_TO_TREASURY=
@@ -194,8 +194,8 @@ It appears that inline datum is incompatible with hashing. What are the cost dif
 ### 5b. Then, let's create a commitment utxo and use inline datum for the Commitment UTxO.
 
 ```
-BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
+BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
+TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
 BOUNTY_LOVELACE=4000000
 BOUNTY_GIMBALS=200
 LOVELACE_TO_TREASURY=1867000000
