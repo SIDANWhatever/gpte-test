@@ -68,12 +68,12 @@ TX_IN_GIMBAL="59fe11806494cd896ff682b34b8942cdce6c29dc43c3d128ac8ee092362be93d#2
 TX_IN_LOVELACE="b7a58d3a06ca2ffbd57a37af7f20f7e1a42f5ca340c899a393620d4bbb1d9ddc#0"
 REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
 TREASURY_ADDR=addr_test1wrq9uzqnh8987dczx9krcr4f80aaescehf47dy4ksvlqs2stg5hrf
-PLUTUS_SCRIPT="/home/james/hd2/gbte/gbte-plutus-v2/output/treasury-gbte-v2.plutus"
+PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2.plutus"
 GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 LOVELACE_TO_LOCK=1875000000
 GIMBALS_TO_LOCK=75000
 GIMBALS_BACK_TO_ISSUER=133000
-DATUM_FILE="/home/james/hd2/gbte/gbte-plutus-v2/output/datum-treasury.json"
+DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
 ```
 
 ### Note:
@@ -113,7 +113,7 @@ cardano-cli transaction submit \
 This is actually simpler than the transaction above. We just want to create a reference script for the escrow contract. Really, this step could have been included in #3 above - just build another reference. Oh well - next time!
 
 ```
-ESCROW_PLUTUS_SCRIPT="/home/james/hd2/gbte/gbte-plutus-v2/output/escrow-gbte-v2.plutus"
+ESCROW_PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/escrow-gbte-v2.plutus"
 ```
 
 ```
@@ -142,8 +142,8 @@ cardano-cli transaction submit \
 
 ### 5a. First, let's skip using inline datum for the commitment, just to make sure things work.
 ```
-BOUNTY_DETAILS_FILE="/home/james/hd2/gbte/gbte-plutus-v2/output/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="/home/james/hd2/gbte/gbte-plutus-v2/output/datum-treasury.json"
+BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/bounty-datum-example-01.json"
+TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
 BOUNTY_LOVELACE=4000000
 BOUNTY_GIMBALS=200
 LOVELACE_TO_TREASURY=1859000000
@@ -194,8 +194,8 @@ It appears that inline datum is incompatible with hashing. What are the cost dif
 ### 5b. Then, let's create a commitment utxo and use inline datum for the Commitment UTxO.
 
 ```
-BOUNTY_DETAILS_FILE="/home/james/hd2/gbte/gbte-plutus-v2/output/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="/home/james/hd2/gbte/gbte-plutus-v2/output/datum-treasury.json"
+BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/bounty-datum-example-01.json"
+TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/output/datum-treasury.json"
 BOUNTY_LOVELACE=4000000
 BOUNTY_GIMBALS=200
 LOVELACE_TO_TREASURY=1867000000
