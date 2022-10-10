@@ -38,7 +38,7 @@ writeBountyEscrowScript = writeValidator "output/escrow-gbte-v2.plutus" $ Escrow
     }
 
 writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2.plutus" $ Treasury.validator $ TreasuryParam
+writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2-02.plutus" $ Treasury.validator $ TreasuryParam
     {
       tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
     , bountyContractHash   = "0ffb3de6f0a5cd949052c99234bf9269e464e1c18979c1d6b9e036f7"

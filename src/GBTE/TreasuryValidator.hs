@@ -30,70 +30,76 @@ import qualified    Prelude                   as Pr
 import GBTE.Types
 
 {-# INLINEABLE treasuryValidator #-}
-treasuryValidator :: TreasuryParam -> WithdrawalDatum -> BountyDetails -> ScriptContext -> Bool
-treasuryValidator tp dat b ctx =    traceIfFalse "Only Issuer can change Treasury"              signedByIssuer ||
-                                    traceIfFalse "Access token missing from input"              inputHasAuthToken &&
-                                    traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken &&
-                                    traceIfFalse "Output Value must match BountyDetails"        checkValueToBountyContract &&
-                                    traceIfFalse "Treasury must keep remaining lovelace"        treasuryGetsLovelaceBack &&
-                                    traceIfFalse "Treasury must keep remaining tokens"          treasuryGetsTokensBack
-  where
-    info :: TxInfo
-    info = scriptContextTxInfo ctx
+treasuryValidator :: TreasuryParam -> WithdrawalDatum -> TreasuryAction -> ScriptContext -> Bool
+treasuryValidator tp dat action ctx =    
+    case action of
+        (Commit b)  ->      traceIfFalse "Access token missing from input"              inputHasAuthToken &&
+                            traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken &&
+                            traceIfFalse "Output Value must match BountyDetails"        (checkValueToBountyContract b) &&
+                            traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b) &&
+                            traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b)
+        Manage      ->      traceIfFalse "Only Issuer can change Treasury"              signedByIssuer
+    where
+        info :: TxInfo
+        info = scriptContextTxInfo ctx
 
-    signedByIssuer :: Bool
-    signedByIssuer = txSignedBy info $ tTreasuryIssuerPkh tp
+        signedByIssuer :: Bool
+        signedByIssuer = txSignedBy info $ tTreasuryIssuerPkh tp
 
-    -- Create a list of all CurrencySymbol in tx input
-    inVals :: [CurrencySymbol]
-    inVals = symbols $ valueSpent info
+        -- Create a list of all CurrencySymbol in tx input
+        inVals :: [CurrencySymbol]
+        inVals = symbols $ valueSpent info
 
-    -- Check that list of CurrencySymbols includes Auth CurrencySymbol
-    inputHasAuthToken :: Bool
-    inputHasAuthToken = tAccessTokenPolicyId tp `elem` inVals
+        -- Check that list of CurrencySymbols includes Auth CurrencySymbol
+        inputHasAuthToken :: Bool
+        inputHasAuthToken = tAccessTokenPolicyId tp `elem` inVals
 
-    -- The Value to be included in Bounty Contract UTXO
-    toBountyContract :: Value
-    toBountyContract = valueLockedBy info (bountyContractHash tp)
+        -- The Value to be included in Bounty Contract UTXO
+        toBountyContract :: Value
+        toBountyContract = valueLockedBy info (bountyContractHash tp)
 
-    -- Check that the Auth Token is sent to Bounty Contract UTXO
-    contractOutputHasAuthToken :: Bool
-    contractOutputHasAuthToken = tAccessTokenPolicyId tp `elem` symbols toBountyContract
+        -- Check that the Auth Token is sent to Bounty Contract UTXO
+        contractOutputHasAuthToken :: Bool
+        contractOutputHasAuthToken = tAccessTokenPolicyId tp `elem` symbols toBountyContract
 
-    -- Check that the Value sent to Contract UTXO matches what is specified in the Redeemer
-    -- Note: For now, we can just remember to match Treasury Redeemer to Bounty Datum
-    -- when we build transactions
+        -- Check that the Value sent to Contract UTXO matches what is specified in the Redeemer
+        checkValueToBountyContract :: BountyDetails -> Bool
+        checkValueToBountyContract bd =  Ada.getLovelace (Ada.fromValue toBountyContract) == lovelaceAmount bd &&
+                                    valueOf toBountyContract (tBountyTokenPolicyId tp) (tBountyTokenName tp) == tokenAmount bd
 
-    -- change GEQ to EQ in next compilation:
-    checkValueToBountyContract :: Bool
-    checkValueToBountyContract =  Ada.getLovelace (Ada.fromValue toBountyContract) >= lovelaceAmount b &&
-                                  valueOf toBountyContract (tBountyTokenPolicyId tp) (tBountyTokenName tp) >= tokenAmount b
+        -- The UTXO input from Treasury
+        ownInput :: TxOut
+        ownInput = case findOwnInput ctx of
+            Nothing -> traceError "treasury input missing"
+            Just i  -> txInInfoResolved i
 
-    -- The UTXO input from Treasury
-    ownInput :: TxOut
-    ownInput = case findOwnInput ctx of
-        Nothing -> traceError "treasury input missing"
-        Just i  -> txInInfoResolved i
+        -- The UTXO output back to Treasury
+        ownOutput :: TxOut
+        ownOutput = case getContinuingOutputs ctx of
+            [o] -> o -- There must be exactly ONE output UTXO
+            _   -> traceError "expected exactly one treasury output"
 
-    -- The UTXO output back to Treasury
-    ownOutput :: TxOut
-    ownOutput = case getContinuingOutputs ctx of
-        [o] -> o -- There must be exactly ONE output UTXO
-        _   -> traceError "expected exactly one treasury output"
+        -- Values of each
+        treasuryInputValue :: Value
+        treasuryInputValue = txOutValue ownInput
 
-    -- Values of each
-    treasuryInputValue :: Value
-    treasuryInputValue = txOutValue ownInput
+        treasuryOutputValue :: Value
+        treasuryOutputValue = txOutValue ownOutput
 
-    treasuryOutputValue :: Value
-    treasuryOutputValue = txOutValue ownOutput
+        -- Compare Values from and to Treasury to make sure that Treasury gets the right value back
+        treasuryGetsLovelaceBack :: BountyDetails -> Bool
+        treasuryGetsLovelaceBack bd = lovelaceToTreasury == lovelaceFromTreasury - lovelaceToBounty
+            where
+                lovelaceFromTreasury = Ada.getLovelace (Ada.fromValue treasuryInputValue)
+                lovelaceToTreasury = Ada.getLovelace (Ada.fromValue treasuryOutputValue)
+                lovelaceToBounty = lovelaceAmount bd
 
-    -- Compare Values from and to Treasury to make sure that Treasury gets the right value back.
-    treasuryGetsLovelaceBack :: Bool
-    treasuryGetsLovelaceBack = Ada.getLovelace ( Ada.fromValue treasuryInputValue) - Ada.getLovelace ( Ada.fromValue treasuryOutputValue) <= Ada.getLovelace ( Ada.fromValue toBountyContract)
-
-    treasuryGetsTokensBack :: Bool
-    treasuryGetsTokensBack = valueOf treasuryInputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp) - valueOf treasuryOutputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp) <= valueOf toBountyContract (tBountyTokenPolicyId tp) (tBountyTokenName tp)
+        treasuryGetsTokensBack :: BountyDetails -> Bool
+        treasuryGetsTokensBack bd = gimbalsToTreasury == gimbalsFromTreasury - gimbalsToBounty
+            where
+                gimbalsFromTreasury = valueOf treasuryInputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
+                gimbalsToTreasury = valueOf treasuryOutputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
+                gimbalsToBounty = tokenAmount bd
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes

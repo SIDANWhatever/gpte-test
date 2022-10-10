@@ -1,12 +1,12 @@
-# Gimbal Bounty Treasury and Escrow
+# Gimbal Bounty Treasury and Escrow (v002)
 ## PlutusV2
 
 ## Quick Reference: Instance Parameters for GBTE PlutusV2 Alpha
 ```
-TREASURY_ADDR=addr_test1wrq9uzqnh8987dczx9krcr4f80aaescehf47dy4ksvlqs2stg5hrf
+TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
 ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-REFERENCE_UTXO_TREASURY_SCRIPT="023f32a67b5e12a777454adc0afa796f16e393782730247eff6bdaa0161bbbb8#1"
+REFERENCE_UTXO_TREASURY_SCRIPT=""
 REFERENCE_UTXO_TREASURY_DATUM="023f32a67b5e12a777454adc0afa796f16e393782730247eff6bdaa0161bbbb8#2"
 REFERENCE_UTXO_ESCROW_SCRIPT="960c1d9681763a127c4b7614ab0c154179fd70e49cf6c68221ecf23961f7a8a9#1"
 
@@ -64,15 +64,15 @@ ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 
 ## 3. Create the Treasury Script Reference UTxO and Treasury Datum Reference UTxO
 ```
-TX_IN_GIMBAL=""
-TX_IN_LOVELACE=""
+TX_IN_GIMBAL="023f32a67b5e12a777454adc0afa796f16e393782730247eff6bdaa0161bbbb8#4"
+TX_IN_LOVELACE="66300bc5a6af8370caf0afd9e3e7a52398137d380cfb644950495f4f81391ee3#0"
 REFERENCE_ADDRESS=
 TREASURY_ADDR=
 PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2.plutus"
 GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
-LOVELACE_TO_LOCK=
-GIMBALS_TO_LOCK=
-GIMBALS_BACK_TO_ISSUER=
+LOVELACE_TO_LOCK=500000000
+GIMBALS_TO_LOCK=10000
+GIMBALS_BACK_TO_ISSUER=123000
 DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
 ```
 
@@ -87,26 +87,24 @@ cardano-cli transaction build \
 --testnet-magic 1 \
 --tx-in $TX_IN_GIMBAL \
 --tx-in $TX_IN_LOVELACE \
---tx-out $REFERENCE_ADDRESS+18679540 \
+--tx-out $REFERENCE_ADDRESS+18912280 \
 --tx-out-reference-script-file $PLUTUS_SCRIPT \
---tx-out $REFERENCE_ADDRESS+2000000 \
---tx-out-inline-datum-file $DATUM_FILE \
 --tx-out $TREASURY_ADDR+"$LOVELACE_TO_LOCK + $GIMBALS_TO_LOCK $GBTE_ASSET" \
 --tx-out-inline-datum-file $DATUM_FILE \
---tx-out $SENDERPREPROD+"1500000 + $GIMBALS_BACK_TO_ISSUER $GBTE_ASSET" \
---change-address $SENDERPREPROD \
+--tx-out $ISSUER+"1500000 + $GIMBALS_BACK_TO_ISSUER $GBTE_ASSET" \
+--change-address $ISSUER \
 --protocol-params-file protocol-preprod.json \
 --out-file issuer-locks-funds-in-treasury.draft
 
 cardano-cli transaction sign \
 --tx-body-file issuer-locks-funds-in-treasury.draft \
 --testnet-magic 1 \
---signing-key-file $SENDERKEYPREPROD \
+--signing-key-file $ISSUERKEY \
 --out-file issuer-locks-funds-in-treasury.signed
 
-cardano-cli transaction submit \
---testnet-magic 1 \
---tx-file issuer-locks-funds-in-treasury.signed
+  cardano-cli transaction submit \
+  --testnet-magic 1 \
+  --tx-file issuer-locks-funds-in-treasury.signed
 ```
 
 ## 4. Create the Escrow Script Reference UTxO - but not yet Datum.

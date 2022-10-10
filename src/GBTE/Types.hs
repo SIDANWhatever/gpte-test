@@ -11,6 +11,7 @@ module GBTE.Types
     ( TreasuryParam (..)
     , WithdrawalDatum (..)
     , BountyDetails (..)
+    , TreasuryAction (..)
     , BountyAction (..)
     , BountyParam (..)
     , BountyEscrowDatum (..)
@@ -46,11 +47,6 @@ data WithdrawalDatum = WithdrawalDatum
 
 PlutusTx.unstableMakeIsData ''WithdrawalDatum
 
-data TreasuryTypes
-instance ValidatorTypes TreasuryTypes where
-    type DatumType TreasuryTypes = WithdrawalDatum
-    type RedeemerType TreasuryTypes = BountyDetails
-
 data BountyDetails = BountyDetails
   { issuerPkh           :: !PubKeyHash
   , contributorPkh      :: !PubKeyHash
@@ -72,6 +68,17 @@ instance Eq BountyDetails where
 
 PlutusTx.unstableMakeIsData ''BountyDetails
 PlutusTx.makeLift ''BountyDetails
+
+data TreasuryAction = Commit BountyDetails | Manage
+    deriving Show
+
+PlutusTx.makeIsDataIndexed ''TreasuryAction [('Commit, 0), ('Manage, 1)]
+PlutusTx.makeLift ''TreasuryAction
+
+data TreasuryTypes
+instance ValidatorTypes TreasuryTypes where
+    type DatumType TreasuryTypes = WithdrawalDatum
+    type RedeemerType TreasuryTypes = TreasuryAction
 
 data BountyEscrowDatum = BountyEscrowDatum
   { bedIssuerPkh           :: !PubKeyHash
