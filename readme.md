@@ -1,4 +1,4 @@
-# Gimbal Bounty Treasury and Escrow (v002)
+# Gimbal Bounty Treasury and Escrow
 ## PlutusV2
 
 ## Quick Reference: Instance Parameters for GBTE PlutusV2 Alpha
@@ -6,8 +6,7 @@
 TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
 ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-REFERENCE_UTXO_TREASURY_SCRIPT=""
-REFERENCE_UTXO_TREASURY_DATUM="023f32a67b5e12a777454adc0afa796f16e393782730247eff6bdaa0161bbbb8#2"
+REFERENCE_UTXO_TREASURY_SCRIPT="fd376248eb20e14c9785a49fe7617636d7f92c598486ec2e2f46857cd2fbf714#1"
 REFERENCE_UTXO_ESCROW_SCRIPT="960c1d9681763a127c4b7614ab0c154179fd70e49cf6c68221ecf23961f7a8a9#1"
 
 ```
@@ -17,7 +16,7 @@ This readme covers the following:
 2. Build Addresses
 3. Create the Treasury Script Reference UTxO and Treasury Datum Reference UTxO
 4. Create the Escrow Script Reference UTxO - but not yet Datum.
-5. Create a Bounty Commitment with Appropriate use of Datum -- was is that use?
+5. Create a Bounty Commitment with Appropriate use of Datum
 6. Distribute an Escrow UTxO.
 7. Review All Error Messages
 8. Looking Ahead: When is a reference UTxO helpful for Datum?
@@ -58,21 +57,21 @@ writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2.plutus" $ Tr
 ## 2. Build Addresses
 Use `cardano-cli address build` as usual, to create addresses for each Contract. For example:
 ```
-TREASURY_ADDR=addr_test1wrq9uzqnh8987dczx9krcr4f80aaescehf47dy4ksvlqs2stg5hrf
+TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
 ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 ```
 
 ## 3. Create the Treasury Script Reference UTxO and Treasury Datum Reference UTxO
 ```
-TX_IN_GIMBAL="023f32a67b5e12a777454adc0afa796f16e393782730247eff6bdaa0161bbbb8#4"
-TX_IN_LOVELACE="66300bc5a6af8370caf0afd9e3e7a52398137d380cfb644950495f4f81391ee3#0"
-REFERENCE_ADDRESS=
-TREASURY_ADDR=
-PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2.plutus"
+TX_IN_GIMBAL=
+TX_IN_LOVELACE=
+REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
+TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
+PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2-02.plutus"
 GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
-LOVELACE_TO_LOCK=500000000
-GIMBALS_TO_LOCK=10000
-GIMBALS_BACK_TO_ISSUER=123000
+LOVELACE_TO_LOCK=
+GIMBALS_TO_LOCK=
+GIMBALS_BACK_TO_ISSUER=
 DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
 ```
 
@@ -87,28 +86,33 @@ cardano-cli transaction build \
 --testnet-magic 1 \
 --tx-in $TX_IN_GIMBAL \
 --tx-in $TX_IN_LOVELACE \
---tx-out $REFERENCE_ADDRESS+18912280 \
+--tx-out $REFERENCE_ADDRESS+2000000 \
 --tx-out-reference-script-file $PLUTUS_SCRIPT \
+--tx-out $REFERENCE_ADDRESS+2000000 \
+--tx-out-inline-datum-file $DATUM_FILE \
 --tx-out $TREASURY_ADDR+"$LOVELACE_TO_LOCK + $GIMBALS_TO_LOCK $GBTE_ASSET" \
 --tx-out-inline-datum-file $DATUM_FILE \
---tx-out $ISSUER+"1500000 + $GIMBALS_BACK_TO_ISSUER $GBTE_ASSET" \
---change-address $ISSUER \
+--tx-out $SENDERPREPROD+"1500000 + $GIMBALS_BACK_TO_ISSUER $GBTE_ASSET" \
+--change-address $SENDERPREPROD \
 --protocol-params-file protocol-preprod.json \
---out-file issuer-locks-funds-in-treasury.draft
+--out-file issuer-locks-funds-in-treasury-02.draft
 
 cardano-cli transaction sign \
---tx-body-file issuer-locks-funds-in-treasury.draft \
+--tx-body-file issuer-locks-funds-in-treasury-02.draft \
 --testnet-magic 1 \
---signing-key-file $ISSUERKEY \
---out-file issuer-locks-funds-in-treasury.signed
+--signing-key-file $SENDERKEYPREPROD \
+--out-file issuer-locks-funds-in-treasury-02.signed
 
-  cardano-cli transaction submit \
-  --testnet-magic 1 \
-  --tx-file issuer-locks-funds-in-treasury.signed
+cardano-cli transaction submit \
+--testnet-magic 1 \
+--tx-file issuer-locks-funds-in-treasury-02.signed
 ```
 
+### You will get an error the first time you run this transaction "correctly".
+- If you do everything else right, you should get an error saying that 2000000 lovelace is not enough to satisfy the minUTxO. Change the amount of lovelace being sent to the reference address accordingly.
+
 ## 4. Create the Escrow Script Reference UTxO - but not yet Datum.
-This is actually simpler than the transaction above. We just want to create a reference script for the escrow contract. Really, this step could have been included in #3 above - just build another reference. Oh well - next time!
+This is actually simpler than the transaction above. We just want to create a reference script for the escrow contract. Really, this step could have been included in #3 above - just adding another reference output.
 
 ```
 ESCROW_PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/escrow-gbte-v2.plutus"
@@ -119,7 +123,7 @@ cardano-cli transaction build \
 --babbage-era \
 --testnet-magic 1 \
 --tx-in $TXIN \
---tx-out $REFERENCE_ADDRESS+20653520 \
+--tx-out $REFERENCE_ADDRESS+2000000 \
 --tx-out-reference-script-file $ESCROW_PLUTUS_SCRIPT \
 --change-address $SENDERPREPROD \
 --protocol-params-file protocol-preprod.json \
@@ -137,123 +141,15 @@ cardano-cli transaction submit \
 ```
 
 ## 5. Create a Bounty Commitment with Appropriate use of Datum
-
-### 5a. First, let's skip using inline datum for the commitment, just to make sure things work.
-```
-BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
-BOUNTY_LOVELACE=
-BOUNTY_GIMBALS=
-LOVELACE_TO_TREASURY=
-GIMBALS_TO_TREASURY=
-GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
-CONTRIBUTOR_TOKEN=""
-CONTRIBUTOR_TOKEN_TXIN=""
-LOVELACE_TXIN=""
-COLLATERAL=""
-TREASURY_UTXO=""
-```
-
-```
-cardano-cli transaction build \
---babbage-era \
---testnet-magic 1 \
---tx-in $CONTRIBUTOR_TOKEN_TXIN \
---tx-in $LOVELACE_TXIN \
---tx-in-collateral $COLLATERAL \
---tx-in $TREASURY_UTXO \
---spending-tx-in-reference $REFERENCE_UTXO_TREASURY_SCRIPT \
---spending-plutus-script-v2 \
---spending-reference-tx-in-inline-datum-present \
---spending-reference-tx-in-redeemer-file $BOUNTY_DETAILS_FILE \
---tx-out $TREASURY_ADDR+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GBTE_ASSET" \
---tx-out-inline-datum-file $TREASURY_DATUM_FILE \
---tx-out $ESCROW_ADDR+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GBTE_ASSET + 1 $CONTRIBUTOR_TOKEN" \
---tx-out-datum-hash-file $BOUNTY_DETAILS_FILE \
---change-address $SENDERPREPROD \
---out-file try-5a3.draft \
---protocol-params-file protocol-preprod.json
-
-cardano-cli transaction sign \
---tx-body-file try-5a3.draft \
---testnet-magic 1 \
---signing-key-file $CONTRIBUTOR_KEY \
---out-file try-5a3.signed
-
-cardano-cli transaction submit \
---testnet-magic 1 \
---tx-file try-5a3.signed
-```
-
-### 5a. works with a fee of 487151 lovelace. Before moving to 5b, a few notes:
-It appears that inline datum is incompatible with hashing. What are the cost differences? The 5a example uses a datum hash file in the Escrow UTxO. Let's make one that uses inline datum, and compare (a) the Commitment costs, and (b) the Distribute costs.
-
-
-### 5b. Then, let's create a commitment utxo and use inline datum for the Commitment UTxO.
-
-```
-BOUNTY_DETAILS_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
-TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
-BOUNTY_LOVELACE=4000000
-BOUNTY_GIMBALS=200
-LOVELACE_TO_TREASURY=1867000000
-GIMBALS_TO_TREASURY=74600
-GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
-CONTRIBUTOR_TOKEN=""
-CONTRIBUTOR_TOKEN_TXIN=""
-LOVELACE_TXIN=""
-COLLATERAL=""
-TREASURY_UTXO=""
-CONTRIBUTOR_ADDR=""
-CONTRIBUTOR_KEY=""
-```
-
-```
-cardano-cli transaction build \
---babbage-era \
---testnet-magic 1 \
---tx-in $CONTRIBUTOR_TOKEN_TXIN \
---tx-in $LOVELACE_TXIN \
---tx-in-collateral $COLLATERAL \
---tx-in $TREASURY_UTXO \
---spending-tx-in-reference $REFERENCE_UTXO_TREASURY_SCRIPT \
---spending-plutus-script-v2 \
---spending-reference-tx-in-datum-file $TREASURY_DATUM_FILE \
---spending-reference-tx-in-redeemer-file $BOUNTY_DETAILS_FILE \
---tx-out $TREASURY_ADDR+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GBTE_ASSET" \
---tx-out-datum-hash-file $TREASURY_DATUM_FILE \
---tx-out $ESCROW_ADDR+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GBTE_ASSET + 1 $CONTRIBUTOR_TOKEN" \
---tx-out-inline-datum-file $BOUNTY_DETAILS_FILE \
---change-address $CONTRIBUTOR_ADDR \
---out-file try-5b.draft \
---protocol-params-file protocol-preprod.json
-
-cardano-cli transaction sign \
---tx-body-file try-5b.draft \
---testnet-magic 1 \
---signing-key-file $CONTRIBUTOR_KEY \
---out-file try-5b.signed
-
-cardano-cli transaction submit \
---testnet-magic 1 \
---tx-file try-5b.signed
-```
-### 5b. works with a fee of 491484 lovelace. (~ .002 ADA more than with just a datum hash)
-
----
-
-### If 5a and 5b work --> Compare Costs. (+ Continue with both approaches on Step 6)
-- 5a: 489382
-- 5b: 491484
-
-### Potential Conclusion: Inline Datum is best for Treasury, but not actually helpful for Commitments. T or F???
-- If this is true, can change datum in forward output to Treasury!
-- And then compare costs again.
-
-### 5c. Todo: Create another bounty, and add inline datum for treasury.
-- Coming soon!
+- Use the script [02-commit-to-bounty.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/scripts/02-commit-to-bounty.sh)
+- Error checking
+- Cost comparisons
 
 ## 6. Unlock Escrow UTXO to Distribute:
-Two Scripts are provided
-1. `03a-distribute-escrow-utxo-with-datum-hash.sh` (cost 359208)
-2. `03b-distribute-escrow-utxo-with-inline-datum.sh` (cost 354963)
+- Use the script [03-distribute-escrow-utxo-with-inline-datum.sh](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/scripts/03-distribute-escrow-utxo-with-inline-datum.sh)
+
+
+# Upcoming at Live Coding:
+## 7. Review All Error Messages
+## 8. Looking Ahead: When is a reference UTxO helpful for Datum?
+## 9. Work to be done: Bounty Listings
