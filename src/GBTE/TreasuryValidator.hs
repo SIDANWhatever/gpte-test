@@ -31,7 +31,7 @@ import GBTE.Types
 
 {-# INLINEABLE treasuryValidator #-}
 treasuryValidator :: TreasuryParam -> WithdrawalDatum -> TreasuryAction -> ScriptContext -> Bool
-treasuryValidator tp dat action ctx =    
+treasuryValidator tp dat action ctx =
     case action of
         (Commit b)  ->      traceIfFalse "Access token missing from input"              inputHasAuthToken &&
                             traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken &&
@@ -64,8 +64,8 @@ treasuryValidator tp dat action ctx =
 
         -- Check that the Value sent to Contract UTXO matches what is specified in the Redeemer
         checkValueToBountyContract :: BountyDetails -> Bool
-        checkValueToBountyContract bd =  Ada.getLovelace (Ada.fromValue toBountyContract) == lovelaceAmount bd &&
-                                    valueOf toBountyContract (tBountyTokenPolicyId tp) (tBountyTokenName tp) == tokenAmount bd
+        checkValueToBountyContract b =  Ada.getLovelace (Ada.fromValue toBountyContract) == lovelaceAmount b &&
+                                    valueOf toBountyContract (tBountyTokenPolicyId tp) (tBountyTokenName tp) == tokenAmount b
 
         -- The UTXO input from Treasury
         ownInput :: TxOut
@@ -88,18 +88,18 @@ treasuryValidator tp dat action ctx =
 
         -- Compare Values from and to Treasury to make sure that Treasury gets the right value back
         treasuryGetsLovelaceBack :: BountyDetails -> Bool
-        treasuryGetsLovelaceBack bd = lovelaceToTreasury == lovelaceFromTreasury - lovelaceToBounty
+        treasuryGetsLovelaceBack b = lovelaceToTreasury == lovelaceFromTreasury - lovelaceToBounty
             where
                 lovelaceFromTreasury = Ada.getLovelace (Ada.fromValue treasuryInputValue)
                 lovelaceToTreasury = Ada.getLovelace (Ada.fromValue treasuryOutputValue)
-                lovelaceToBounty = lovelaceAmount bd
+                lovelaceToBounty = lovelaceAmount b
 
         treasuryGetsTokensBack :: BountyDetails -> Bool
-        treasuryGetsTokensBack bd = gimbalsToTreasury == gimbalsFromTreasury - gimbalsToBounty
+        treasuryGetsTokensBack b = gimbalsToTreasury == gimbalsFromTreasury - gimbalsToBounty
             where
                 gimbalsFromTreasury = valueOf treasuryInputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
                 gimbalsToTreasury = valueOf treasuryOutputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
-                gimbalsToBounty = tokenAmount bd
+                gimbalsToBounty = tokenAmount b
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes
