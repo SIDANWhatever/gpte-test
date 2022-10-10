@@ -1,6 +1,8 @@
 # Gimbal Bounty Treasury and Escrow
 ## PlutusV2
 
+Updated 2022-10-10. See [changelog](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/changelog.md).
+
 ## Quick Reference: Instance Parameters for GBTE PlutusV2 Alpha
 ```
 TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
