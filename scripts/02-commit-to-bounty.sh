@@ -8,15 +8,15 @@ CONTRIBUTORKEY=$2
 
 # Be sure to review each of these files:
 TREASURY_DATUM_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
-BOUNTY_DATUM_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-02.json"
-TREASURY_ACTION_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/treasury-action-test-02.json"
+BOUNTY_DATUM_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
+TREASURY_ACTION_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/treasury-redeemer-example-01.json"
 
 export CARDANO_NODE_SOCKET_PATH=/<YOUR PATH TO>/testnet-pre-production/db/node.socket
 
 TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
 ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 REFERENCE_UTXO_TREASURY_SCRIPT=fd376248eb20e14c9785a49fe7617636d7f92c598486ec2e2f46857cd2fbf714#1
-BOUNTY_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
+GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
 
 cardano-cli query tip --testnet-magic 1
 cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json

@@ -44,9 +44,10 @@ library
 
   hs-source-dirs:       src
 
-  exposed-modules:      GBTE.TreasuryValidator
+  exposed-modules:      GBTE.Compiler
+                        GBTE.TreasuryValidator
                         GBTE.EscrowValidator
-                        GBTE.Compiler
+                        GBTE.Types
 
   build-depends:        bytestring
                       , cardano-api
