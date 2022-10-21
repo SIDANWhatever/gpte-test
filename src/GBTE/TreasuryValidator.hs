@@ -30,14 +30,15 @@ import qualified    Prelude                   as Pr
 import GBTE.Types
 
 {-# INLINEABLE treasuryValidator #-}
-treasuryValidator :: TreasuryParam -> WithdrawalDatum -> TreasuryAction -> ScriptContext -> Bool
+treasuryValidator :: TreasuryParam -> TreasuryDatum -> TreasuryAction -> ScriptContext -> Bool
 treasuryValidator tp dat action ctx =
     case action of
         (Commit b)  ->      traceIfFalse "Access token missing from input"              inputHasAuthToken &&
                             traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken &&
                             traceIfFalse "Output Value must match BountyDetails"        (checkValueToBountyContract b) &&
                             traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b) &&
-                            traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b)
+                            traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b) &&
+                            traceIfFalse "Not a valid bounty hash"                      checkBountyHash
         Manage      ->      traceIfFalse "Only Issuer can change Treasury"              signedByIssuer
     where
         info :: TxInfo
@@ -100,6 +101,9 @@ treasuryValidator tp dat action ctx =
                 gimbalsFromTreasury = valueOf treasuryInputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
                 gimbalsToTreasury = valueOf treasuryOutputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
                 gimbalsToBounty = tokenAmount b
+
+        checkBountyHash :: Bool
+        checkBountyHash = True
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes

@@ -9,7 +9,7 @@
 
 module GBTE.Types
     ( TreasuryParam (..)
-    , WithdrawalDatum (..)
+    , TreasuryDatum (..)
     , BountyDetails (..)
     , TreasuryAction (..)
     , BountyAction (..)
@@ -40,12 +40,13 @@ data TreasuryParam = TreasuryParam
 
 PlutusTx.makeLift ''TreasuryParam
 
-data WithdrawalDatum = WithdrawalDatum
-  { bountyCount     :: !Integer
-  , treasuryKey     :: !PubKeyHash
+-- consider representing Issuer with a token, instead of PKH
+data TreasuryDatum = TreasuryDatum
+  { bountyHashList  :: [BuiltinByteString]
+  , issuerTokenName :: !TokenName
   } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
-PlutusTx.unstableMakeIsData ''WithdrawalDatum
+PlutusTx.unstableMakeIsData ''TreasuryDatum
 
 data BountyDetails = BountyDetails
   { issuerPkh           :: !PubKeyHash
@@ -53,12 +54,13 @@ data BountyDetails = BountyDetails
   , lovelaceAmount      :: !Integer
   , tokenAmount         :: !Integer
   , expirationTime      :: !POSIXTime
+  , bountyHash          :: !BuiltinByteString
   } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
 instance Eq BountyDetails where
   {-# INLINABLE (==) #-}
-  BountyDetails iP cP lA tA eT == BountyDetails iP' cP' lA' tA' eT' =
-    (iP == iP') && (cP == cP') && (lA == lA') && (tA == tA') && (eT == eT')
+  BountyDetails iP cP lA tA eT bH == BountyDetails iP' cP' lA' tA' eT' bH' =
+    (iP == iP') && (cP == cP') && (lA == lA') && (tA == tA') && (eT == eT') && (bH == bH')
 
     -- Alternative way of comparisons
     -- a == b = (issuerPkh       a == issuerPkh      b) &&
@@ -77,7 +79,7 @@ PlutusTx.makeLift ''TreasuryAction
 
 data TreasuryTypes
 instance ValidatorTypes TreasuryTypes where
-    type DatumType TreasuryTypes = WithdrawalDatum
+    type DatumType TreasuryTypes = TreasuryDatum
     type RedeemerType TreasuryTypes = TreasuryAction
 
 data BountyEscrowDatum = BountyEscrowDatum
@@ -86,12 +88,13 @@ data BountyEscrowDatum = BountyEscrowDatum
   , bedLovelaceAmount      :: !Integer
   , bedTokenAmount         :: !Integer
   , bedExpirationTime      :: !POSIXTime
+  , bedBountyHash          :: !BuiltinByteString
   } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
 instance Eq BountyEscrowDatum where
   {-# INLINABLE (==) #-}
-  BountyEscrowDatum bIP bCP bLA bTA bET == BountyEscrowDatum bIP' bCP' bLA' bTA' bET' =
-    (bIP == bIP') && (bCP == bCP') && (bLA == bLA') && (bTA == bTA') && (bET == bET')
+  BountyEscrowDatum bIP bCP bLA bTA bET bBH == BountyEscrowDatum bIP' bCP' bLA' bTA' bET' bBH' =
+    (bIP == bIP') && (bCP == bCP') && (bLA == bLA') && (bTA == bTA') && (bET == bET') && (bBH == bBH')
 
     -- Alternative way of comparisons
     -- a == b = (bedIssuerPkh       a == bedIssuerPkh      b) &&
