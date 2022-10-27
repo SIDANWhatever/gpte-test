@@ -1,15 +1,15 @@
 # Gimbal Bounty Treasury and Escrow
 ## PlutusV2
 
-Updated 2022-10-10. See [changelog](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/changelog.md).
+Updated 2022-10-25. See [changelog](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/changelog.md).
 
 ## Quick Reference: Instance Parameters for GBTE PlutusV2 Alpha
 ```
-TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
-ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
+TREASURY_ADDR=addr_test1wq6zj47drftsn0hmeckn279ws0p9h4fge8tz4n9z5yqnd9gzw7dgt
+ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
 REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-REFERENCE_UTXO_TREASURY_SCRIPT="fd376248eb20e14c9785a49fe7617636d7f92c598486ec2e2f46857cd2fbf714#1"
-REFERENCE_UTXO_ESCROW_SCRIPT="960c1d9681763a127c4b7614ab0c154179fd70e49cf6c68221ecf23961f7a8a9#1"
+REFERENCE_UTXO_TREASURY_SCRIPT="121d887abea6b7f17bce7ea4437dfbd78f6328be2412bad0a02974b18fe7259c#1"
+REFERENCE_UTXO_ESCROW_SCRIPT="f063fbc9a6542eb1cee7667fd1c6fe62ce562659b3dce4f6b8ee1230a0382bfa#1"
 
 ```
 ## Table of Contents
@@ -32,35 +32,35 @@ This readme covers the following:
 
 ```
 writeBountyEscrowScript :: IO (Either (FileError ()) ())
-writeBountyEscrowScript = writeValidator "output/escrow-gbte-v2.plutus" $ Escrow.validator $ BountyParam
+writeBountyEscrowScript = writeValidator "output/escrow-gbte-v2-with-bounty-hash2.plutus" $ Escrow.validator $ BountyParam
     {
-      bountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , bountyTokenName     = "tgimbal"
-    , accessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , treasuryIssuerPkh   = "65295d6feacfc33fe029f51785770d92373e82cde28c3cd8c55a3cd1"
+      bountyTokenPolicyId     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
+    , bountyTokenName         = "tGimbal"
+    , accessTokenPolicyId     = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
+    , treasuryIssuerPolicyId  = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
     }
 
 writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2.plutus" $ Treasury.validator $ TreasuryParam
+writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2-with-bounty-hash2.plutus" $ Treasury.validator $ TreasuryParam
     {
       tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , bountyContractHash   = "0ffb3de6f0a5cd949052c99234bf9269e464e1c18979c1d6b9e036f7"
+    , bountyContractHash   = "98d2b58a4eff29e8e9f9d16fb2fb0ac4146d0b0772a417daab840a74"
     , tBountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , tBountyTokenName     = "tgimbal"
-    , tTreasuryIssuerPkh   = "65295d6feacfc33fe029f51785770d92373e82cde28c3cd8c55a3cd1"
+    , tBountyTokenName     = "tGimbal"
+    , tIssuerPolicyId      = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
     }
 ```
 
 ### When you complete Mastery Assignment 303.4:
-- At minimum, change the values of `treasuryIssuerPkh` in `writeBountyEscrowScript`; and `bountyContractHash` and `tTreasuryIssuerPkh` in `writeBountyTreasuryScript`.
-- You can also choose to test the contracts with different tokens, or keep `tgimbals` and the `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784` policyId for Contributor tokens.
+- At minimum, change the values of `treasuryIssuerPkh` in `writeBountyEscrowScript`; and `bountyContractHash` and `tIssuerPolicyId` in `writeBountyTreasuryScript`.
+- You can also choose to test the contracts with different tokens, or keep `tGimbals` and the `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784` policyId for Contributor tokens.
 
 
 ## 2. Build Addresses
 Use `cardano-cli address build` as usual, to create addresses for each Contract. For example:
 ```
-TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
-ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
+TREASURY_ADDR=addr_test1wq6zj47drftsn0hmeckn279ws0p9h4fge8tz4n9z5yqnd9gzw7dgt
+ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
 ```
 
 ## 3. Create the Treasury Script Reference UTxO and Treasury Datum Reference UTxO
@@ -68,9 +68,8 @@ ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
 TX_IN_GIMBAL=
 TX_IN_LOVELACE=
 REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
-PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2-02.plutus"
-GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
+PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/treasury-gbte-v2-with-bounty-hash.plutus"
+GBTE_ASSET=
 LOVELACE_TO_LOCK=
 GIMBALS_TO_LOCK=
 GIMBALS_BACK_TO_ISSUER=
@@ -117,7 +116,7 @@ cardano-cli transaction submit \
 This is actually simpler than the transaction above. We just want to create a reference script for the escrow contract. Really, this step could have been included in #3 above - just adding another reference output.
 
 ```
-ESCROW_PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/escrow-gbte-v2.plutus"
+ESCROW_PLUTUS_SCRIPT="<YOUR PATH TO>/gbte-plutus-v2/output/escrow-gbte-with-bounty-hash.plutus"
 ```
 
 ```

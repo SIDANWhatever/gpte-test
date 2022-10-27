@@ -30,12 +30,12 @@ import              GBTE.Types
 escrowValidator :: BountyParam -> BountyEscrowDatum -> BountyAction -> ScriptContext -> Bool
 escrowValidator bp dat action ctx =
   case action of
-    Cancel      ->  traceIfFalse "Only Issuer can Cancel Bounty"                signedByIssuer &&
+    Cancel      ->  traceIfFalse "Only Issuer can Cancel Bounty"                inputHasIssuerToken &&
                     traceIfFalse "Can only cancel bounty after deadline"        deadlineReached
-    Update      ->  traceIfFalse "Only Issuer can Update Bounty"                signedByIssuer &&
+    Update      ->  traceIfFalse "Only Issuer can Update Bounty"                inputHasIssuerToken &&
                     traceIfFalse "Update must create one new Bounty UTXO"       createsContinuingBounty &&
                     traceIfFalse "Output UTXO value must be geq datum specs"    outputFulfillsValue
-    Distribute  ->  traceIfFalse "Issuer must sign to distribute bounty"        signedByIssuer &&
+    Distribute  ->  traceIfFalse "Issuer must sign to distribute bounty"        inputHasIssuerToken &&
                     traceIfFalse "Contributor must receive full bounty values"  outputFulfillsBounty
   where
     info :: TxInfo
@@ -47,8 +47,13 @@ escrowValidator bp dat action ctx =
     bTokenN :: TokenName
     bTokenN = bountyTokenName bp
 
-    signedByIssuer :: Bool
-    signedByIssuer = txSignedBy info $ bedIssuerPkh dat
+    -- Create a list of all CurrencySymbol in tx input
+    inVals :: [CurrencySymbol]
+    inVals = symbols $ valueSpent info
+
+    -- Check that input has Issuer Token
+    inputHasIssuerToken :: Bool
+    inputHasIssuerToken = treasuryIssuerPolicyId bp `elem` inVals
 
     deadlineReached :: Bool
     deadlineReached = Ledger.contains (from $ bedExpirationTime dat) $ txInfoValidRange info

@@ -2,45 +2,26 @@
 
 # Contributor Commits to Bounty - GBTE PlutusV2, with reference scripts
 
-# Command Line Arguments:
 CONTRIBUTOR=$1
 CONTRIBUTORKEY=$2
 
-# Be sure to review each of these files:
-TREASURY_DATUM_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury.json"
-BOUNTY_DATUM_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/bounty-datum-example-01.json"
-TREASURY_ACTION_FILE="/<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/treasury-redeemer-example-01.json"
+export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/cardano/testnet-pre-production/db/node.socket
 
-export CARDANO_NODE_SOCKET_PATH=/<YOUR PATH TO>/testnet-pre-production/db/node.socket
-
-TREASURY_ADDR=addr_test1wphcpc9rnyyrgzgfvlmzurfcd998gz8lek4d3026xtf66dqck7vdf
-ESCROW_ADDR=addr_test1wq8lk00x7zjum9ys2tyeyd9ljf57ge8pcxyhnswkh8srdac4rsjss
-REFERENCE_UTXO_TREASURY_SCRIPT=fd376248eb20e14c9785a49fe7617636d7f92c598486ec2e2f46857cd2fbf714#1
-GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7467696d62616c"
+TREASURY_ADDR=addr_test1wq6zj47drftsn0hmeckn279ws0p9h4fge8tz4n9z5yqnd9gzw7dgt
+ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
+REFERENCE_UTXO_TREASURY_SCRIPT="121d887abea6b7f17bce7ea4437dfbd78f6328be2412bad0a02974b18fe7259c#1"
 
 cardano-cli query tip --testnet-magic 1
 cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
 
-
-
-# -------------------------------------------
-# # Usage Option 1: You can hard code these values for quick testing.
-# # Recommended for making sure that all errors are working as expected.
-
-# # Hard Code for Quick Testing:
-# CONTRIBUTOR_TOKEN_TXIN=
-# CONTRIBUTOR_TOKEN=
-# COLLATERAL=
-# LOVELACE_TXIN=
-# TREASURY_UTXO=
-# LOVELACE_IN_TREASURY=
-# GIMBALS_IN_TREASURY=
-# BOUNTY_LOVELACE=
-# BOUNTY_GIMBALS=
+TREASURY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/datum-treasury-with-real-hashes.json"
+TREASURY_ACTION_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/TreasuryAction-Commit-Example-01.json"
+BOUNTY_DATUM_FILE="<YOUR PATH TO>/gbte-plutus-v2/datum-and-redeemers/BountyEscrowDatum-Example-01.json"
+GBTE_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
 
 # -------------------------------------------
-# Usage Option 2: You can review utxos and input these values in the terminal
-# Interaction for repeat use:
+
+# # Interaction for repeat use:
 cardano-cli query utxo --testnet-magic 1 --address $CONTRIBUTOR
 echo "Choose a UTxO that holds Contributor Token:"
 read CONTRIBUTOR_TOKEN_TXIN
@@ -69,6 +50,19 @@ read BOUNTY_GIMBALS
 
 # -------------------------------------------
 
+# Hard Code for Quick Testing:
+# CONTRIBUTOR_TOKEN_TXIN=
+# CONTRIBUTOR_TOKEN=
+# COLLATERAL=
+# LOVELACE_TXIN=
+# TREASURY_UTXO=
+# LOVELACE_IN_TREASURY=
+# GIMBALS_IN_TREASURY=
+# BOUNTY_LOVELACE=
+# BOUNTY_GIMBALS=
+
+# -------------------------------------------
+
 LOVELACE_TO_TREASURY=$(expr $LOVELACE_IN_TREASURY - $BOUNTY_LOVELACE)
 GIMBALS_TO_TREASURY=$(expr $GIMBALS_IN_TREASURY - $BOUNTY_GIMBALS)
 
@@ -81,22 +75,22 @@ cardano-cli transaction build \
 --tx-in $TREASURY_UTXO \
 --spending-tx-in-reference $REFERENCE_UTXO_TREASURY_SCRIPT \
 --spending-plutus-script-v2 \
---spending-reference-tx-in-datum-file $TREASURY_DATUM_FILE \
+--spending-reference-tx-in-inline-datum-present \
 --spending-reference-tx-in-redeemer-file $TREASURY_ACTION_FILE \
 --tx-out $TREASURY_ADDR+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GBTE_ASSET" \
---tx-out-datum-hash-file $TREASURY_DATUM_FILE \
+--tx-out-inline-datum-file $TREASURY_DATUM_FILE \
 --tx-out $ESCROW_ADDR+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GBTE_ASSET + 1 $CONTRIBUTOR_TOKEN" \
 --tx-out-inline-datum-file $BOUNTY_DATUM_FILE \
 --change-address $CONTRIBUTOR \
---out-file try-002.draft \
+--out-file try-5b.draft \
 --protocol-params-file protocol.json
 
 cardano-cli transaction sign \
---tx-body-file try-002.draft \
+--tx-body-file try-5b.draft \
 --testnet-magic 1 \
 --signing-key-file $CONTRIBUTORKEY \
---out-file try-002.signed
+--out-file try-5b.signed
 
 cardano-cli transaction submit \
 --testnet-magic 1 \
---tx-file try-002.signed
+--tx-file try-5b.signed

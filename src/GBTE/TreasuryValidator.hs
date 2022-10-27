@@ -38,19 +38,22 @@ treasuryValidator tp dat action ctx =
                             traceIfFalse "Output Value must match BountyDetails"        (checkValueToBountyContract b) &&
                             traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b) &&
                             traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b) &&
-                            traceIfFalse "Not a valid bounty hash"                      checkBountyHash
-        Manage      ->      traceIfFalse "Only Issuer can change Treasury"              signedByIssuer
+                            traceIfFalse "Not a valid bounty hash"                      (checkBountyHash b)
+        Manage      ->      traceIfFalse "Only Issuer can change Treasury"              inputHasIssuerToken
     where
         info :: TxInfo
         info = scriptContextTxInfo ctx
-
-        signedByIssuer :: Bool
-        signedByIssuer = txSignedBy info $ tTreasuryIssuerPkh tp
 
         -- Create a list of all CurrencySymbol in tx input
         inVals :: [CurrencySymbol]
         inVals = symbols $ valueSpent info
 
+        -- case action -> Manage:
+        -- If the TreasuryAction is "Manage", then input must have an IssuerToken
+        inputHasIssuerToken :: Bool
+        inputHasIssuerToken = tIssuerPolicyId tp `elem` inVals
+
+        -- case action -> Commit:
         -- Check that list of CurrencySymbols includes Auth CurrencySymbol
         inputHasAuthToken :: Bool
         inputHasAuthToken = tAccessTokenPolicyId tp `elem` inVals
@@ -102,8 +105,9 @@ treasuryValidator tp dat action ctx =
                 gimbalsToTreasury = valueOf treasuryOutputValue (tBountyTokenPolicyId tp) (tBountyTokenName tp)
                 gimbalsToBounty = tokenAmount b
 
-        checkBountyHash :: Bool
-        checkBountyHash = True
+        -- Check that the bounty hash in redeemer matches one of the hashes in treasury datum.
+        checkBountyHash :: BountyDetails -> Bool
+        checkBountyHash b = (bountyHash b) `elem` (bountyHashList dat)
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes

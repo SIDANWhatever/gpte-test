@@ -31,11 +31,11 @@ import              Prelude                     (Show (..))
 import  qualified   Prelude                 as  Pr
 
 data TreasuryParam = TreasuryParam
-    { tAccessTokenPolicyId   :: !CurrencySymbol
+    { tIssuerPolicyId        :: !CurrencySymbol
+    , tAccessTokenPolicyId   :: !CurrencySymbol
     , bountyContractHash     :: !ValidatorHash
     , tBountyTokenPolicyId   :: !CurrencySymbol
     , tBountyTokenName       :: !TokenName
-    , tTreasuryIssuerPkh     :: !PubKeyHash
     } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
 PlutusTx.makeLift ''TreasuryParam
@@ -49,8 +49,7 @@ data TreasuryDatum = TreasuryDatum
 PlutusTx.unstableMakeIsData ''TreasuryDatum
 
 data BountyDetails = BountyDetails
-  { issuerPkh           :: !PubKeyHash
-  , contributorPkh      :: !PubKeyHash
+  { contributorPkh      :: !PubKeyHash
   , lovelaceAmount      :: !Integer
   , tokenAmount         :: !Integer
   , expirationTime      :: !POSIXTime
@@ -59,14 +58,8 @@ data BountyDetails = BountyDetails
 
 instance Eq BountyDetails where
   {-# INLINABLE (==) #-}
-  BountyDetails iP cP lA tA eT bH == BountyDetails iP' cP' lA' tA' eT' bH' =
-    (iP == iP') && (cP == cP') && (lA == lA') && (tA == tA') && (eT == eT') && (bH == bH')
-
-    -- Alternative way of comparisons
-    -- a == b = (issuerPkh       a == issuerPkh      b) &&
-    --          (contributorPkh  a == contributorPkh b) &&
-    --          (lovelaceAmount  a == lovelaceAmount b) &&
-    --          (expirationTime  a == expirationTime b)
+  BountyDetails cP lA tA eT bH == BountyDetails cP' lA' tA' eT' bH' =
+    (cP == cP') && (lA == lA') && (tA == tA') && (eT == eT') && (bH == bH')
 
 PlutusTx.unstableMakeIsData ''BountyDetails
 PlutusTx.makeLift ''BountyDetails
@@ -83,8 +76,7 @@ instance ValidatorTypes TreasuryTypes where
     type RedeemerType TreasuryTypes = TreasuryAction
 
 data BountyEscrowDatum = BountyEscrowDatum
-  { bedIssuerPkh           :: !PubKeyHash
-  , bedContributorPkh      :: !PubKeyHash
+  { bedContributorPkh      :: !PubKeyHash
   , bedLovelaceAmount      :: !Integer
   , bedTokenAmount         :: !Integer
   , bedExpirationTime      :: !POSIXTime
@@ -93,8 +85,8 @@ data BountyEscrowDatum = BountyEscrowDatum
 
 instance Eq BountyEscrowDatum where
   {-# INLINABLE (==) #-}
-  BountyEscrowDatum bIP bCP bLA bTA bET bBH == BountyEscrowDatum bIP' bCP' bLA' bTA' bET' bBH' =
-    (bIP == bIP') && (bCP == bCP') && (bLA == bLA') && (bTA == bTA') && (bET == bET') && (bBH == bBH')
+  BountyEscrowDatum bCP bLA bTA bET bBH == BountyEscrowDatum bCP' bLA' bTA' bET' bBH' =
+    (bCP == bCP') && (bLA == bLA') && (bTA == bTA') && (bET == bET') && (bBH == bBH')
 
     -- Alternative way of comparisons
     -- a == b = (bedIssuerPkh       a == bedIssuerPkh      b) &&
@@ -110,15 +102,15 @@ data BountyParam = BountyParam
     { bountyTokenPolicyId     :: !CurrencySymbol
     , bountyTokenName         :: !TokenName
     , accessTokenPolicyId     :: !CurrencySymbol
-    , treasuryIssuerPkh       :: !PubKeyHash
+    , treasuryIssuerPolicyId  :: !CurrencySymbol
     } deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
 PlutusTx.makeLift ''BountyParam
 
-data BountyAction = Cancel | Update | Distribute
+data BountyAction = Cancel | Distribute | Update
   deriving Show
 
-PlutusTx.makeIsDataIndexed ''BountyAction [('Cancel, 0), ('Update, 1), ('Distribute, 2)]
+PlutusTx.makeIsDataIndexed ''BountyAction [('Cancel, 0), ('Distribute, 1), ('Update, 2)]
 PlutusTx.makeLift ''BountyAction
 
 data EscrowTypes
