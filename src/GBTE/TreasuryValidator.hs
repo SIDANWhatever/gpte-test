@@ -38,7 +38,8 @@ treasuryValidator tp dat action ctx =
                             traceIfFalse "Output Value must match BountyDetails"        (checkValueToBountyContract b) &&
                             traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b) &&
                             traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b) &&
-                            traceIfFalse "Not a valid bounty hash"                      (checkBountyHash b)
+                            traceIfFalse "Not a valid bounty hash"                      (checkBountyHash b) &&
+                            traceIfFalse "In and out datum must match"                  inAndOutDatumMustMatch
         Manage      ->      traceIfFalse "Only Issuer can change Treasury"              inputHasIssuerToken
     where
         info :: TxInfo
@@ -108,6 +109,9 @@ treasuryValidator tp dat action ctx =
         -- Check that the bounty hash in redeemer matches one of the hashes in treasury datum.
         checkBountyHash :: BountyDetails -> Bool
         checkBountyHash b = (bountyHash b) `elem` (bountyHashList dat)
+
+        inAndOutDatumMustMatch :: Bool
+        inAndOutDatumMustMatch = True
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes
