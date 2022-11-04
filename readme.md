@@ -1,17 +1,11 @@
 # Gimbal Bounty Treasury and Escrow
 ## PlutusV2
 
-Updated 2022-10-25. See [changelog](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/changelog.md). (Copy changes from readme-private after drafting 22-11-02)
+Updated 2022-11-04. See [changelog](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gbte/gbte-plutus-v2/-/blob/master/changelog.md).
 
 ## Quick Reference: Instance Parameters for GBTE PlutusV2 Alpha
-```
-TREASURY_ADDR=addr_test1wq6zj47drftsn0hmeckn279ws0p9h4fge8tz4n9z5yqnd9gzw7dgt
-ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
-REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-REFERENCE_UTXO_TREASURY_SCRIPT="121d887abea6b7f17bce7ea4437dfbd78f6328be2412bad0a02974b18fe7259c#1"
-REFERENCE_UTXO_ESCROW_SCRIPT="f063fbc9a6542eb1cee7667fd1c6fe62ce562659b3dce4f6b8ee1230a0382bfa#1"
+See [`000-project-variables.sh`](https://gitlab.com/gimbalabs/plutus-pbl-summer-2022/projects/gpte/gpte-plutus-v2/-/blob/master/scripts/000-project-variables.sh)
 
-```
 ## Table of Contents
 This readme covers the following:
 1. Compile Plutus Scripts (Escrow and Treasury)
@@ -51,15 +45,11 @@ writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2-with-bounty-
     }
 ```
 
-### When you complete Mastery Assignment 303.4:
-- At minimum, change the values of `treasuryIssuerPkh` in `writeBountyEscrowScript`; and `bountyContractHash` and `tIssuerPolicyId` in `writeBountyTreasuryScript`.
-- You can also choose to test the contracts with different tokens, or keep `tGimbals` and the `738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784` policyId for Contributor tokens.
-
 
 ## 2. Build Addresses
 Use `cardano-cli address build` as usual, to create addresses for each Contract. For example:
 ```
-TREASURY_ADDR=addr_test1wq6zj47drftsn0hmeckn279ws0p9h4fge8tz4n9z5yqnd9gzw7dgt
+TREASURY_ADDR=addr_test1wzluyf6hzw8z9dg4nme04qe4yzlk7gzd7hmhctafpeap46qshz4mn
 ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
 ```
 
