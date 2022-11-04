@@ -1,0 +1,14 @@
+# Updated 2022-11-04
+
+export TREASURY_ADDR=addr_test1wzluyf6hzw8z9dg4nme04qe4yzlk7gzd7hmhctafpeap46qshz4mn
+export ESCROW_ADDR=addr_test1wzvd9dv2fmljn68fl8gklvhmptzpgmgtqae2g9764wzq5aq6646m0
+export REFERENCE_ADDR=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
+export REFERENCE_UTXO_TREASURY_SCRIPT="cf4c79e3dfbd37009c4938095ad07d34c6289fdc84f04983875a04efed048e11#2"
+export REFERENCE_UTXO_ESCROW_SCRIPT="cf4c79e3dfbd37009c4938095ad07d34c6289fdc84f04983875a04efed048e11#3"
+export GIMBAL_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
+
+export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
+export PROJECT_PATH="<YOUR PATH TO plutus-gbte-v2>"
+
+cardano-cli query tip --testnet-magic 1
+cardano-cli query protocol-parameters --testnet-magic 1 --out-file protocol.json
