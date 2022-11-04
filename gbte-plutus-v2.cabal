@@ -48,7 +48,7 @@ library
                         GBTE.TreasuryValidator
                         GBTE.EscrowValidator
                         GBTE.Types
-                        GBTE.ApprovalMinter
+                        -- GBTE.ApprovalMinter
 
   build-depends:        bytestring
                       , cardano-api
