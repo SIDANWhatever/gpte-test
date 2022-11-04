@@ -12,45 +12,45 @@ BOUNTY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/BountyEscrowDatum-Example-0
 
 # -------------------------------------------
 
-# # Interaction for repeat use:
-# cardano-cli query utxo --testnet-magic 1 --address $CONTRIBUTOR
-# echo "Choose a UTxO that holds Contributor Token:"
-# read CONTRIBUTOR_TOKEN_TXIN
-# echo "What is the Asset ID of the Contributor Token?"
-# read CONTRIBUTOR_TOKEN
-# echo "Specify a Collateral UTxO:"
-# read COLLATERAL
-# echo "Specify a TXIN for fees:"
-# read LOVELACE_TXIN
+# # Interactive Testing:
+cardano-cli query utxo --testnet-magic 1 --address $CONTRIBUTOR
+echo "Choose a UTxO that holds Contributor Token:"
+read CONTRIBUTOR_TOKEN_TXIN
+echo "What is the Asset ID of the Contributor Token?"
+read CONTRIBUTOR_TOKEN
+echo "Specify a Collateral UTxO:"
+read COLLATERAL
+echo "Specify a TXIN for fees:"
+read LOVELACE_TXIN
 
-# cardano-cli query utxo --testnet-magic 1 --address $TREASURY_ADDR
-# echo "Specify the Treasury UTxO:"
-# read TREASURY_UTXO
-# echo "How many lovelace are in the treasury?"
-# read LOVELACE_IN_TREASURY
-# echo "How many tgimbals are in the treasury?"
-# read GIMBALS_IN_TREASURY
+cardano-cli query utxo --testnet-magic 1 --address $TREASURY_ADDR
+echo "Specify the Treasury UTxO:"
+read TREASURY_UTXO
+echo "How many lovelace are in the treasury?"
+read LOVELACE_IN_TREASURY
+echo "How many tgimbals are in the treasury?"
+read GIMBALS_IN_TREASURY
 
-# echo ""
-# echo "About the Bounty:"
-# echo ""
-# echo "Lovelace in Bounty:"
-# read BOUNTY_LOVELACE
-# echo "Gimbals in Bounty:"
-# read BOUNTY_GIMBALS
+echo ""
+echo "About the Bounty:"
+echo ""
+echo "Lovelace in Bounty:"
+read BOUNTY_LOVELACE
+echo "Gimbals in Bounty:"
+read BOUNTY_GIMBALS
 
 # -------------------------------------------
 
-# Hard Code for Quick Testing:
-CONTRIBUTOR_TOKEN_TXIN=be3b13427b1012af414a9b205ef97f392bfe6a3b40127b18ff037c2063ad1b33#2
-CONTRIBUTOR_TOKEN=738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784.6578616d706c65314742544570726570726f64
-COLLATERAL=5083cd44d22f43cb2f18043763636371b6609adca1305e63da7536ae81471647#0
-LOVELACE_TXIN=5083cd44d22f43cb2f18043763636371b6609adca1305e63da7536ae81471647#0
-TREASURY_UTXO=cf4c79e3dfbd37009c4938095ad07d34c6289fdc84f04983875a04efed048e11#1
-LOVELACE_IN_TREASURY=1500000000
-GIMBALS_IN_TREASURY=28025
-BOUNTY_LOVELACE=25000000
-BOUNTY_GIMBALS=1000
+# For Quick Testing:
+# CONTRIBUTOR_TOKEN_TXIN=
+# CONTRIBUTOR_TOKEN=
+# COLLATERAL=
+# LOVELACE_TXIN=
+# TREASURY_UTXO=
+# LOVELACE_IN_TREASURY=
+# GIMBALS_IN_TREASURY=
+# BOUNTY_LOVELACE=
+# BOUNTY_GIMBALS=
 
 # -------------------------------------------
 
