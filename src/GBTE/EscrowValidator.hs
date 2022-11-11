@@ -26,6 +26,8 @@ import              PlutusTx.Prelude    hiding (Semigroup (..), unless)
 
 import              GBTE.Types
 
+-- TODO add logic so that deadline can only be extended, but not shortened.
+
 {-# INLINEABLE escrowValidator #-}
 escrowValidator :: BountyParam -> BountyEscrowDatum -> BountyAction -> ScriptContext -> Bool
 escrowValidator bp dat action ctx =
