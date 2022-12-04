@@ -4,7 +4,7 @@
 Updated 2022-12-05. See [changelog](./changelog.md).
 
 ## Quick Reference: Instance Parameters for GPTE PlutusV2 1.0.0
-See [`000-project-variables.sh`]()
+See [`000-project-variables.sh`](./scripts/000-project-variables.sh)
 
 ## Table of Contents
 1. Compile Plutus Scripts (Escrow and Treasury)
@@ -111,16 +111,12 @@ cardano-cli transaction submit \
 - If you do everything else right, you should get an error saying that 2000000 lovelace is not enough to satisfy the minUTxO. Change the amount of lovelace being sent to the reference address accordingly.
 
 ## 4. Create a Project Commitment with Appropriate use of Datum
-- Use the script [02-commit-to-project.sh]()
+- Use the script [02-commit-to-project.sh](./scripts/02-commit-to-project.sh)
 - Error checking
 - Cost comparisons
 
 ## 5. Distribute a Commitment UTxO from Escrow Contract:
-- Use the script [03-distribute-escrow-utxo-with-inline-datum.sh]()
-
-## After pushing changes:
-- [ ] Update all links in project
-- [ ] Renaming in /src?
+- Use the script [03-distribute-escrow-utxo-with-inline-datum.sh](./scripts/03-distribute-escrow-utxo-with-inline-datum.sh)
 
 # Upcoming at Live Coding:
 ## 6. Review Contract Error Messages
