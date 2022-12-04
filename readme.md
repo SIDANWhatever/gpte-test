@@ -1,7 +1,7 @@
 # Gimbal Project Treasury and Escrow
 ## PlutusV2
 
-Updated 2022-12-05. See [changelog]().
+Updated 2022-12-05. See [changelog](./changelog.md).
 
 ## Quick Reference: Instance Parameters for GPTE PlutusV2 1.0.0
 See [`000-project-variables.sh`]()
@@ -117,9 +117,6 @@ cardano-cli transaction submit \
 
 ## 5. Distribute a Commitment UTxO from Escrow Contract:
 - Use the script [03-distribute-escrow-utxo-with-inline-datum.sh]()
-
-## Before pushing changes
-- reconcile all readmes and make plan for after merging
 
 ## After pushing changes:
 - [ ] Update all links in project
