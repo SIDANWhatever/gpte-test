@@ -118,9 +118,11 @@ cardano-cli transaction submit \
 ## 5. Distribute a Commitment UTxO from Escrow Contract:
 - Use the script [03-distribute-escrow-utxo-with-inline-datum.sh](./scripts/03-distribute-escrow-utxo-with-inline-datum.sh)
 
-# Upcoming at Live Coding:
-## 6. Review Contract Error Messages
-## 7. Explore: When is a reference UTxO helpful for Datum?
-## 8. Decide What's Next: Currrent Project Listings
+## Upcoming at Live Coding:
+### 6. Review Contract Error Messages
+### 7. Explore: When is a reference UTxO helpful for Datum?
+### 8. Decide What's Next: Currrent Project Listings
 
-## 2022-12-05 - Testing Additional bash scripts in bash 
+## Tasks
+- [ ] documenting new bash scripts
+- [ ] change naming in plutus code from Bounty to Project
