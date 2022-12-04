@@ -3,8 +3,8 @@
 # Update Treasury Datum
 . 000-project-variables.sh
 
-export ISSUER=$SENDERPREPROD
-export ISSUERKEY=$SENDERKEYPREPROD
+export ISSUER=$1
+export ISSUERKEY=$2
 export REDEEMER_ACTION_FILE=$PROJECT_PATH"/datum-and-redeemers/Manage.json"
 export NEW_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/datum-treasury-with-real-hashes-002.json"
 

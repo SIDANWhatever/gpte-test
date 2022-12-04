@@ -6,7 +6,7 @@ CONTRIBUTORKEY=$2
 
 . 000-project-variables.sh
 
-TREASURY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/datum-treasury-with-real-hashes-001.json"
+TREASURY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/datum-treasury-with-project-hashes.json"
 TREASURY_ACTION_FILE=$PROJECT_PATH"/datum-and-redeemers/TreasuryAction-Commit-Example-01.json"
 BOUNTY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/BountyEscrowDatum-Example-01.json"
 
@@ -23,7 +23,7 @@ read COLLATERAL
 echo "Specify a TXIN for fees:"
 read LOVELACE_TXIN
 
-cardano-cli query utxo --testnet-magic 1 --address $TREASURY_ADDR
+cardano-cli query utxo --testnet-magic 1 --address $TREASURY_ADDRESS
 echo "Specify the Treasury UTxO:"
 read TREASURY_UTXO
 echo "How many lovelace are in the treasury?"
@@ -68,20 +68,20 @@ cardano-cli transaction build \
 --spending-plutus-script-v2 \
 --spending-reference-tx-in-inline-datum-present \
 --spending-reference-tx-in-redeemer-file $TREASURY_ACTION_FILE \
---tx-out $TREASURY_ADDR+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GIMBAL_ASSET" \
+--tx-out $TREASURY_ADDRESS+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GIMBAL_ASSET" \
 --tx-out-inline-datum-file $TREASURY_DATUM_FILE \
---tx-out $ESCROW_ADDR+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GIMBAL_ASSET + 1 $CONTRIBUTOR_TOKEN" \
+--tx-out $ESCROW_ADDRESS+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GIMBAL_ASSET + 1 $CONTRIBUTOR_TOKEN" \
 --tx-out-inline-datum-file $BOUNTY_DATUM_FILE \
 --change-address $CONTRIBUTOR \
---out-file try-5b.draft \
+--out-file project-commitment-01.draft \
 --protocol-params-file protocol.json
 
-# cardano-cli transaction sign \
-# --tx-body-file try-5b.draft \
-# --testnet-magic 1 \
-# --signing-key-file $CONTRIBUTORKEY \
-# --out-file try-5b.signed
+cardano-cli transaction sign \
+--tx-body-file project-commitment-01.draft \
+--testnet-magic 1 \
+--signing-key-file $CONTRIBUTORKEY \
+--out-file project-commitment-01.signed
 
-# cardano-cli transaction submit \
-# --testnet-magic 1 \
-# --tx-file try-5b.signed
+cardano-cli transaction submit \
+--testnet-magic 1 \
+--tx-file project-commitment-01.signed

@@ -2,15 +2,15 @@
 
 # Distribute Escrow UTxO
 export CONTRIBUTOR=$1
-export ISSUER=$SENDERPREPROD
-export ISSUERKEY=$SENDERKEYPREPROD
+export ISSUER=$2
+export ISSUERKEY=$3
 
 . 000-project-variables.sh
 
 export REDEEMER_ACTION_FILE=$PROJECT_PATH"/datum-and-redeemers/Distribute.json"
 
 # Interactive Testing:
-cardano-cli query utxo --testnet-magic 1 --address $ESCROW_ADDR
+cardano-cli query utxo --testnet-magic 1 --address $ESCROW_ADDRESS
 echo "Which bounty utxo will you distribute?"
 read CONTRACT_TXIN
 echo "How many lovelace are in this bounty?"
