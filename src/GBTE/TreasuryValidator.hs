@@ -16,6 +16,7 @@ module GBTE.TreasuryValidator (validator) where
 
 -- are all of these necessary?
 import qualified    Ledger.Ada as Ada
+import Ledger (scriptHashAddress)
 
 import              Plutus.V1.Ledger.Value
 import              Plutus.V2.Ledger.Api
@@ -33,14 +34,15 @@ import GBTE.Types
 treasuryValidator :: TreasuryParam -> TreasuryDatum -> TreasuryAction -> ScriptContext -> Bool
 treasuryValidator tp dat action ctx =
     case action of
-        (Commit b)  ->      traceIfFalse "Access token missing from input"              inputHasAuthToken &&
-                            traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken &&
+        (Commit b)  ->      traceIfFalse "Access token missing from input"              inputHasAuthToken              &&
+                            traceIfFalse "Access token missing from contract output"    contractOutputHasAuthToken     &&
                             traceIfFalse "Output Value must match BountyDetails"        (checkValueToBountyContract b) &&
-                            traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b) &&
-                            traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b) &&
-                            traceIfFalse "Not a valid bounty hash"                      (checkBountyHash b) &&
-                            traceIfFalse "In and out datum must match"                  checkDatum
-        Manage      ->      traceIfFalse "Only Issuer can change Treasury"              inputHasIssuerToken
+                            traceIfFalse "Treasury must keep remaining lovelace"        (treasuryGetsLovelaceBack b)   &&
+                            traceIfFalse "Treasury must keep remaining tokens"          (treasuryGetsTokensBack b)     &&
+                            traceIfFalse "Not a valid bounty hash"                      (checkBountyHash b)            &&
+                            traceIfFalse "In and out datum must match"                  checkDatum                     &&
+                            traceIfFalse "Redeemer and escrow datum not the same"       (checkBountyDetailsIsEscrowDatum b)
+        Manage      ->      traceIfFalse "Only Issuer can change Treasury"              inputHasIssuerToken            
     where
         info :: TxInfo
         info = scriptContextTxInfo ctx
@@ -112,6 +114,26 @@ treasuryValidator tp dat action ctx =
 
         checkDatum :: Bool
         checkDatum = txOutDatum ownInput == txOutDatum ownOutput
+
+        --get utxo to escrow contract, in case only one 
+        escrowOutput :: TxOut 
+        escrowOutput =
+            let
+                ins = [ i
+                    | i <- txInfoOutputs info
+                    , txOutAddress i == scriptHashAddress (bountyContractHash tp)
+                    ]
+            in
+                case ins of
+                    [o] -> o
+                    _   -> traceError "expected exactly one escrow output"
+
+
+        -- escrow datum should be inline and same as bounty details 
+        checkBountyDetailsIsEscrowDatum :: BountyDetails -> Bool 
+        checkBountyDetailsIsEscrowDatum bd = case txOutDatum escrowOutput of 
+                                               OutputDatum d -> d == Datum (toBuiltinData bd)
+                                               _             -> traceError "wrong datum type"
 
 
 typedValidator :: TreasuryParam -> TypedValidator TreasuryTypes
