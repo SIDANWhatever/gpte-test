@@ -64,17 +64,17 @@ In this Transaction, we:
 
 #### Set Variables:
 ```bash
-TX_IN_GIMBAL=0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#5
-TX_IN_LOVELACE=0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#0
-LOVELACE_TO_LOCK=250000000
-GIMBAL_ASSET=fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c
-GIMBALS_TO_LOCK=25000
-GIMBALS_BACK_TO_ISSUER=875000
-REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-TREASURY_PLUTUS_SCRIPT=/home/james/hd2/gpte/gpte-plutus-v2/output/treasury-gpte-v2-with-project-hash2.plutus
-ESCROW_PLUTUS_SCRIPT=/home/james/hd2/gpte/gpte-plutus-v2/output/escrow-gpte-v2-with-project-hash2.plutus
-DATUM_FILE=/home/james/hd2/gpte/gpte-plutus-v2/datum-and-redeemers/datum-treasury-with-project-hashes.json
-TREASURY_ADDRESS=addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8
+TX_IN_GIMBAL=
+TX_IN_LOVELACE=
+LOVELACE_TO_LOCK=
+GIMBAL_ASSET=
+GIMBALS_TO_LOCK=
+GIMBALS_BACK_TO_ISSUER=
+REFERENCE_ADDRESS=
+TREASURY_PLUTUS_SCRIPT=
+ESCROW_PLUTUS_SCRIPT=
+DATUM_FILE=
+TREASURY_ADDRESS=
 
 ```
 
