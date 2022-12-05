@@ -1,14 +1,14 @@
 # Updated 2022-12-05
 
-export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/testnet-pre-production/db/node.socket
-export PROJECT_PATH=""
+export CARDANO_NODE_SOCKET_PATH=/home/james/hd2/cardano/testnet-pre-production/db/node.socket
+export PROJECT_PATH="/home/james/hd2/gpte/gpte-plutus-v2"
 
 # Current Preprod 2022-12-05 (add naming convention)
-export TREASURY_ADDRESS=addr_test1wp360epgpgpa5f9s987s2fnu7xz30qn62xm3n0z6rk6najckqrsh3
-export ESCROW_ADDRESS=addr_test1wqrkvx32zyjyrdmszf7wtn904sl93fnuw4rvvnl4v5pcznq0jdj83
+export TREASURY_ADDRESS=addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8
+export ESCROW_ADDRESS=addr_test1wrlh2k4wqjhyjxvg4hnhtq8uqpzp99v97c9nm6075rjyhkqtjphn5
 export REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
-export REFERENCE_UTXO_TREASURY_SCRIPT="0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#1"
-export REFERENCE_UTXO_ESCROW_SCRIPT="0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#2"
+export REFERENCE_UTXO_TREASURY_SCRIPT=8502fe3617b70d12fc65c8c17dab8483f5a7f847e0fba0376fe7abacf4773262#1
+export REFERENCE_UTXO_ESCROW_SCRIPT=8502fe3617b70d12fc65c8c17dab8483f5a7f847e0fba0376fe7abacf4773262#2
 export GIMBAL_ASSET="fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c"
 
 

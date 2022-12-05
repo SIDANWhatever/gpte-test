@@ -20,35 +20,37 @@ See [`000-project-variables.sh`](./scripts/000-project-variables.sh)
 
 ## 1. Compile Plutus Scripts
 - As with the previous version of GPTE, we will need to define some Parameters for our Treasury and Escrow Validators.
-- Remember that the hash of the Escrow script is a parameter in the Treasury Validator, so we'll need to compile Escrow first. Luckily, there's a function in `GPTE.Compiler` 
+- Remember that the hash of the Escrow script is a parameter in the Treasury Validator, so we'll need to compile Escrow first. A function in `GPTE.Compiler` computes the `escrowValidatorHash` as a `TreasuryParam`.
 
-```
-writeBountyEscrowScript :: IO (Either (FileError ()) ())
-writeBountyEscrowScript = writeValidator "output/escrow-gbte-v2-with-bounty-hash2.plutus" $ Escrow.validator $ BountyParam
-    {
-      bountyTokenPolicyId     = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , bountyTokenName         = "tGimbal"
-    , accessTokenPolicyId     = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , treasuryIssuerPolicyId  = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
+```haskell
+escrowParam :: EscrowParam
+escrowParam =
+  EscrowParam
+    { projectTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c",
+      projectTokenName = "tGimbal",
+      contribTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784",
+      treasuryIssuerPolicyId = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
     }
 
-writeBountyTreasuryScript :: IO (Either (FileError ()) ())
-writeBountyTreasuryScript = writeValidator "output/treasury-gbte-v2-with-bounty-hash2.plutus" $ Treasury.validator $ TreasuryParam
-    {
-      tAccessTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784"
-    , bountyContractHash   = Escrow.escrowValidatorHash bountyParam
-    , tBountyTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c"
-    , tBountyTokenName     = "tGimbal"
-    , tIssuerPolicyId      = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
-    }
+writeProjectTreasuryScript :: IO (Either (FileError ()) ())
+writeProjectTreasuryScript =
+  writeValidator "output/treasury-gpte-v2-with-project-hash2.plutus" $
+    Treasury.validator $
+      TreasuryParam
+        { tContribTokenPolicyId = "738ec2c17e3319fa3e3721dbd99f0b31fce1b8006bb57fbd635e3784",
+          escrowContractHash = Escrow.escrowValidatorHash escrowParam,
+          tProjectTokenPolicyId = "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c",
+          tProjectTokenName = "tGimbal",
+          tIssuerPolicyId = "94784b7e88ae2a6732dc5c0f41b3151e5f9719ea513f19cdb9aecfb3"
+        }
 ```
 
 
 ## 2. Build Addresses
 Use `cardano-cli address build` as usual, to create addresses for each Contract. For example:
-```
-TREASURY_ADDRESS=addr_test1wp360epgpgpa5f9s987s2fnu7xz30qn62xm3n0z6rk6najckqrsh3
-ESCROW_ADDRESS=addr_test1wqrkvx32zyjyrdmszf7wtn904sl93fnuw4rvvnl4v5pcznq0jdj83
+```bash
+TREASURY_ADDRESS=addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8
+ESCROW_ADDRESS=addr_test1wrlh2k4wqjhyjxvg4hnhtq8uqpzp99v97c9nm6075rjyhkqtjphn5
 ```
 
 ## 3. Create the Reference Script UTxOs and Treasury Datum Reference UTxO
@@ -61,18 +63,18 @@ In this Transaction, we:
 - Build scripts for initializing a Treasury and creating Reference UTxOs
 
 #### Set Variables:
-```
-TX_IN_GIMBAL=
-TX_IN_LOVELACE=
-LOVELACE_TO_LOCK=
-GIMBAL_ASSET=
-GIMBALS_TO_LOCK=
-GIMBALS_BACK_TO_ISSUER=
-REFERENCE_ADDRESS=
-TREASURY_PLUTUS_SCRIPT=
-ESCROW_PLUTUS_SCRIPT=
-DATUM_FILE=
-TREASURY_ADDRESS=
+```bash
+TX_IN_GIMBAL=0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#5
+TX_IN_LOVELACE=0235eebe85460cc9b2db9353410e18aabaa52482c4757faa9e848fdb8071e321#0
+LOVELACE_TO_LOCK=250000000
+GIMBAL_ASSET=fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c.7447696d62616c
+GIMBALS_TO_LOCK=25000
+GIMBALS_BACK_TO_ISSUER=875000
+REFERENCE_ADDRESS=addr_test1qqe5wnjzkhrgfvntj3dndzml7003h0n5ezen924qjrrglv6648u33jzvq2msza6gyqdcnau0njhav2sv46adkc9c8wdqx5aas8
+TREASURY_PLUTUS_SCRIPT=/home/james/hd2/gpte/gpte-plutus-v2/output/treasury-gpte-v2-with-project-hash2.plutus
+ESCROW_PLUTUS_SCRIPT=/home/james/hd2/gpte/gpte-plutus-v2/output/escrow-gpte-v2-with-project-hash2.plutus
+DATUM_FILE=/home/james/hd2/gpte/gpte-plutus-v2/datum-and-redeemers/datum-treasury-with-project-hashes.json
+TREASURY_ADDRESS=addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8
 
 ```
 
@@ -83,9 +85,9 @@ cardano-cli transaction build \
 --testnet-magic 1 \
 --tx-in $TX_IN_GIMBAL \
 --tx-in $TX_IN_LOVELACE \
---tx-out $REFERENCE_ADDRESS+21002630 \
+--tx-out $REFERENCE_ADDRESS+21019870 \
 --tx-out-reference-script-file $TREASURY_PLUTUS_SCRIPT \
---tx-out $REFERENCE_ADDRESS+22786970 \
+--tx-out $REFERENCE_ADDRESS+22920580 \
 --tx-out-reference-script-file $ESCROW_PLUTUS_SCRIPT \
 --tx-out $REFERENCE_ADDRESS+1861920 \
 --tx-out-inline-datum-file $DATUM_FILE \
@@ -125,4 +127,3 @@ cardano-cli transaction submit \
 
 ## Tasks
 - [ ] documenting new bash scripts
-- [ ] change naming in plutus code from Bounty to Project

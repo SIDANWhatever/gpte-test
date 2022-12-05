@@ -1,7 +1,7 @@
 cabal-version:      2.4
-name:               gbte-plutus-v2
-version:            0.1.0.0
-description:        Gimbal Bounty Treasury and Escrow.
+name:               gpte-plutus-v2
+version:            1.0.0
+description:        Gimbal Project Treasury and Escrow.
 license:            Apache-2.0
 author:             Gimbalabs PPBL
 maintainer:         gimbalabs.com
@@ -44,11 +44,11 @@ library
 
   hs-source-dirs:       src
 
-  exposed-modules:      GBTE.Compiler
-                        GBTE.TreasuryValidator
-                        GBTE.EscrowValidator
-                        GBTE.Types
-                        -- GBTE.ApprovalMinter
+  exposed-modules:      GPTE.Compiler
+                        GPTE.TreasuryValidator
+                        GPTE.EscrowValidator
+                        GPTE.Types
+                        -- GPTE.ApprovalMinter
 
   build-depends:        bytestring
                       , cardano-api
