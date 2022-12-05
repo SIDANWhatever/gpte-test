@@ -1,7 +1,7 @@
 # Updated 2022-12-05
 
-export CARDANO_NODE_SOCKET_PATH=/home/james/hd2/cardano/testnet-pre-production/db/node.socket
-export PROJECT_PATH="/home/james/hd2/gpte/gpte-plutus-v2"
+export CARDANO_NODE_SOCKET_PATH=<YOUR PATH TO>/db/node.socket
+export PROJECT_PATH="<YOUR PATH TO>/gpte-plutus-v2"
 
 # Current Preprod 2022-12-05 (add naming convention)
 export TREASURY_ADDRESS=addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8

@@ -8,6 +8,7 @@ export ISSUERKEY=$3
 . 000-project-variables.sh
 
 export REDEEMER_ACTION_FILE=$PROJECT_PATH"/datum-and-redeemers/Distribute.json"
+export DISTRIBUTE_METADATA_JSON_FILE=$PROJECT_PATH"/metadata/distribute-metadata.json"
 
 # Interactive Testing:
 cardano-cli query utxo --testnet-magic 1 --address $ESCROW_ADDRESS
@@ -55,6 +56,7 @@ cardano-cli transaction build \
 --tx-out $ISSUER+"1500000 + 1 $ISSUER_ASSET" \
 --change-address $ISSUER \
 --protocol-params-file protocol.json \
+--metadata-json-file $DISTRIBUTE_METADATA_JSON_FILE \
 --testnet-magic 1 \
 --out-file distribute-commitment-tx.draft
 

@@ -1,5 +1,5 @@
 {
-    "d8c6fed6ad9bff7d69aa39e02afcb0f202527c673758cc552985d55fc5aff87b#1": {
+    "d2652b0ec63d24b689edd1b24a075b5d63d29355a744964e9942e984a2e36c19#0": {
         "address": "addr_test1wpr838k666akr3p5k8tfcdfenrlzpueq2j87tp7zkx6mh8qm8maf8",
         "datum": null,
         "inlineDatum": {
@@ -33,9 +33,9 @@
         "referenceScript": null,
         "value": {
             "fb45417ab92a155da3b31a8928c873eb9fd36c62184c736f189d334c": {
-                "7447696d62616c": 24900
+                "7447696d62616c": 24800
             },
-            "lovelace": 245000000
+            "lovelace": 240000000
         }
     }
 }
