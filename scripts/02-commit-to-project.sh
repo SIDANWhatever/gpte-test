@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Contributor Commits to Bounty - GBTE PlutusV2, with reference scripts
+# Contributor Commits to Project - GPTE PlutusV2, with reference scripts
 CONTRIBUTOR=$1
 CONTRIBUTORKEY=$2
 
@@ -8,7 +8,7 @@ CONTRIBUTORKEY=$2
 
 TREASURY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/datum-treasury-with-project-hashes.json"
 TREASURY_ACTION_FILE=$PROJECT_PATH"/datum-and-redeemers/TreasuryAction-Commit-Example-01.json"
-BOUNTY_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/BountyEscrowDatum-Example-01.json"
+COMMITMENT_DATUM_FILE=$PROJECT_PATH"/datum-and-redeemers/CommitmentEscrowDatum-Example-01.json"
 
 # -------------------------------------------
 
@@ -32,12 +32,12 @@ echo "How many tgimbals are in the treasury?"
 read GIMBALS_IN_TREASURY
 
 echo ""
-echo "About the Bounty:"
+echo "About the Project:"
 echo ""
-echo "Lovelace in Bounty:"
-read BOUNTY_LOVELACE
-echo "Gimbals in Bounty:"
-read BOUNTY_GIMBALS
+echo "Lovelace in Project:"
+read PROJECT_LOVELACE
+echo "Gimbals in Project:"
+read PROJECT_GIMBALS
 
 # -------------------------------------------
 
@@ -49,13 +49,13 @@ read BOUNTY_GIMBALS
 # TREASURY_UTXO=
 # LOVELACE_IN_TREASURY=
 # GIMBALS_IN_TREASURY=
-# BOUNTY_LOVELACE=
-# BOUNTY_GIMBALS=
+# PROJECT_LOVELACE=
+# PROJECT_GIMBALS=
 
 # -------------------------------------------
 
-LOVELACE_TO_TREASURY=$(expr $LOVELACE_IN_TREASURY - $BOUNTY_LOVELACE)
-GIMBALS_TO_TREASURY=$(expr $GIMBALS_IN_TREASURY - $BOUNTY_GIMBALS)
+LOVELACE_TO_TREASURY=$(expr $LOVELACE_IN_TREASURY - $PROJECT_LOVELACE)
+GIMBALS_TO_TREASURY=$(expr $GIMBALS_IN_TREASURY - $PROJECT_GIMBALS)
 
 cardano-cli transaction build \
 --babbage-era \
@@ -70,8 +70,8 @@ cardano-cli transaction build \
 --spending-reference-tx-in-redeemer-file $TREASURY_ACTION_FILE \
 --tx-out $TREASURY_ADDRESS+"$LOVELACE_TO_TREASURY + $GIMBALS_TO_TREASURY $GIMBAL_ASSET" \
 --tx-out-inline-datum-file $TREASURY_DATUM_FILE \
---tx-out $ESCROW_ADDRESS+"$BOUNTY_LOVELACE + $BOUNTY_GIMBALS $GIMBAL_ASSET + 1 $CONTRIBUTOR_TOKEN" \
---tx-out-inline-datum-file $BOUNTY_DATUM_FILE \
+--tx-out $ESCROW_ADDRESS+"$PROJECT_LOVELACE + $PROJECT_GIMBALS $GIMBAL_ASSET + 1 $CONTRIBUTOR_TOKEN" \
+--tx-out-inline-datum-file $COMMITMENT_DATUM_FILE \
 --change-address $CONTRIBUTOR \
 --out-file project-commitment-01.draft \
 --protocol-params-file protocol.json
