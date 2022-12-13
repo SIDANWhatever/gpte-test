@@ -32,11 +32,11 @@ import Prelude (Show (..))
 import qualified Prelude as Pr
 
 data TreasuryParam = TreasuryParam
-  { tIssuerPolicyId :: !CurrencySymbol,
-    tContribTokenPolicyId :: !CurrencySymbol,
-    escrowContractHash :: !ValidatorHash,
-    tProjectTokenPolicyId :: !CurrencySymbol,
-    tProjectTokenName :: !TokenName
+  { tIssuerPolicyId :: CurrencySymbol,
+    tContribTokenPolicyId :: CurrencySymbol,
+    escrowContractHash :: ValidatorHash,
+    tProjectTokenPolicyId :: CurrencySymbol,
+    tProjectTokenName :: TokenName
   }
   deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
@@ -45,18 +45,18 @@ PlutusTx.makeLift ''TreasuryParam
 -- consider representing Issuer with a token, instead of PKH
 data TreasuryDatum = TreasuryDatum
   { projectHashList :: [BuiltinByteString],
-    issuerTokenName :: !TokenName
+    issuerTokenName :: TokenName
   }
   deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
 PlutusTx.unstableMakeIsData ''TreasuryDatum
 
 data ProjectDetails = ProjectDetails
-  { contributorPkh :: !PubKeyHash,
-    lovelaceAmount :: !Integer,
-    tokenAmount :: !Integer,
-    expirationTime :: !POSIXTime,
-    projectHash :: !BuiltinByteString
+  { contributorPkh :: PubKeyHash,
+    lovelaceAmount :: Integer,
+    tokenAmount :: Integer,
+    expirationTime :: POSIXTime,
+    projectHash :: BuiltinByteString
   }
   deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
@@ -81,11 +81,11 @@ instance ValidatorTypes TreasuryTypes where
   type RedeemerType TreasuryTypes = TreasuryAction
 
 data CommitmentEscrowDatum = CommitmentEscrowDatum
-  { bedContributorPkh :: !PubKeyHash,
-    bedLovelaceAmount :: !Integer,
-    bedTokenAmount :: !Integer,
-    bedExpirationTime :: !POSIXTime,
-    bedProjectHash :: !BuiltinByteString
+  { bedContributorPkh :: PubKeyHash,
+    bedLovelaceAmount :: Integer,
+    bedTokenAmount :: Integer,
+    bedExpirationTime :: POSIXTime,
+    bedProjectHash :: BuiltinByteString
   }
   deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
@@ -105,10 +105,10 @@ PlutusTx.unstableMakeIsData ''CommitmentEscrowDatum
 PlutusTx.makeLift ''CommitmentEscrowDatum
 
 data EscrowParam = EscrowParam
-  { projectTokenPolicyId :: !CurrencySymbol,
-    projectTokenName :: !TokenName,
-    contribTokenPolicyId :: !CurrencySymbol,
-    treasuryIssuerPolicyId :: !CurrencySymbol
+  { projectTokenPolicyId :: CurrencySymbol,
+    projectTokenName :: TokenName,
+    contribTokenPolicyId :: CurrencySymbol,
+    treasuryIssuerPolicyId :: CurrencySymbol
   }
   deriving (Pr.Eq, Pr.Ord, Show, Generic)
 
