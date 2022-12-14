@@ -1,3 +1,8 @@
+## 2022-12-13
+#### In `GPTE.Types`
+- Remove strict typing from all record declarations
+> Note that `mainnet-instance-001` and `current-preprod` are unchanged and maintain strict typing.
+
 ## 2022-12-05
 - Update Type names in project
 
