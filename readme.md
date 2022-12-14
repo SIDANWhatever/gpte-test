@@ -1,10 +1,15 @@
 # Gimbal Project Treasury and Escrow
 ## PlutusV2
 
-Updated 2022-12-05. See [changelog](./changelog.md).
+Updated 2022-12-13. See [changelog](./changelog.md).
 
 ## Quick Reference: Instance Parameters for GPTE PlutusV2 1.0.0
 See [`000-project-variables.sh`](./scripts/000-project-variables.sh)
+
+## About Project Branches:
+- `current-preprod` and `mainnet-instance-001` are used in live deployments of GPTE
+- Branches in a Plutus project should be seen as snapshots in time.
+- Development can continue on `master` or feature branches as needed.
 
 ## Table of Contents
 1. Compile Plutus Scripts (Escrow and Treasury)
